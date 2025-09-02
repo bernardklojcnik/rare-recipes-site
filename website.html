@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bernard’s Rare Recipes — With AI Sous‑Chef</title>
+  <meta name="description" content="A warm, welcoming cooking site showcasing rare & forgotten recipes — plus an AI sous‑chef chatbot to help you cook and discover." />
+  <style>
+    /* ===== Theme: warm & welcoming ===== */
+    :root{
+      --bg:#fff7ed;         /* peach 50 */
+      --card:#fff1e6;       /* peach 100 */
+      --ink:#2b2118;        /* deep brown text */
+      --muted:#6b4e3d;      /* cocoa */
+      --brand:#e36414;      /* orange */
+      --brand-ink:#2b1509;  /* dark for contrast on brand tints */
+      --line:#ead7c9;       /* subtle border */
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",sans-serif}
+    img{max-width:100%;display:block;border-radius:14px}
+    a{color:var(--brand);text-decoration:none}
+
+    header{max-width:1100px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+    header strong{font-weight:800}
+    nav a{color:var(--muted);margin-left:16px}
+
+    .hero{max-width:1100px;margin:16px auto;padding:28px;border-radius:20px;background:var(--card);border:1px solid var(--line);display:grid;gap:16px;grid-template-columns:1.3fr .7fr;align-items:center}
+    .hero .copy h1{margin:0 0 6px;font-size:clamp(28px,4.5vw,44px)}
+    .hero .copy p{margin:0 0 12px;color:var(--muted)}
+    .cta{display:inline-block;background:var(--brand);color:#fff;border:0;padding:10px 14px;border-radius:12px;font-weight:700}
+
+    .grid{max-width:1100px;margin:20px auto;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding:0 20px}
+    .card{background:var(--card);border:1px solid var(--line);padding:16px;border-radius:16px}
+    .card h3{margin:0 0 6px}
+    .card p{margin:0;color:var(--muted)}
+
+    .about{max-width:1100px;margin:10px auto 0;padding:0 20px}
+    .about .card{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    footer{max-width:1100px;margin:36px auto 70px;padding:0 20px;color:var(--muted)}
+
+    /* ===== Chatbot widget ===== */
+    .chat-launch{
+      position:fixed;right:18px;bottom:18px;border:0;border-radius:50%;width:58px;height:58px;
+      background:var(--brand);color:#fff;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 12px 28px rgba(0,0,0,.25)
+    }
+    .chat-panel{
+      position:fixed;right:18px;bottom:86px;width:360px;max-width:92vw;height:520px;display:none;flex-direction:column;
+      background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,.35)
+    }
+    .chat-header{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#ffe8d8}
+    .chat-title{font-weight:800}
+    .chat-close{background:transparent;border:0;color:var(--muted);font-size:20px;cursor:pointer}
+    .chat-log{padding:12px;height:100%;overflow:auto}
+    .msg{margin:8px 0;display:flex;gap:8px}
+    .msg .bubble{padding:10px 12px;border-radius:12px;max-width:85%}
+    .me .bubble{background:#ffe1cc;border:1px solid var(--line)}
+    .bot .bubble{background:#fff3ea;border:1px solid var(--line)}
+    .msg small{color:var(--muted);display:block;margin-top:4px}
+    .chat-input{display:flex;border-top:1px solid var(--line)}
+    .chat-input textarea{flex:1;resize:none;min-height:46px;max-height:120px;background:#fff;border:0;padding:10px;border-radius:0;color:var(--ink)}
+    .chat-input button{border:0;padding:0 14px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}
+
+    .chat-launch:focus,.chat-close:focus,.chat-input button:focus,a:focus{outline:2px solid var(--brand);outline-offset:2px}
+    @media (max-width:820px){ .hero{grid-template-columns:1fr} .about .card{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Bernard’s Rare Recipes</strong>
+    <nav>
+      <a href="#recipes">Recipes</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#" id="openChatFromNav">Chat</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="copy">
+      <h1>Rare & Forgotten Recipes — with an AI Sous‑Chef 🍳</h1>
+      <p>Explore hard‑to‑find dishes from old cookbooks and regional traditions. Ask the chatbot for substitutions, step‑by‑step help, or ideas based on ingredients you have.</p>
+      <a class="cta" href="#recipes">See today’s picks</a>
+    </div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?q=80&w=1200&auto=format&fit=crop" alt="Vintage copper pots and rustic kitchen scene" loading="lazy">
+    </div>
+  </section>
+
+  <section id="recipes" class="grid" aria-label="Featured rare recipes">
+    <article class="card">
+      <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?q=80&w=1200&auto=format&fit=crop" alt="Handmade pasta on wooden board" loading="lazy">
+      <h3>Istrian Fuži with Wild Truffle Butter</h3>
+      <p>Delicate hand‑rolled pasta from Istria, finished with foraged truffles and aged butter. <em>Notes:</em> substitute porcini if truffles unavailable.</p>
+    </article>
+    <article class="card">
+      <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?q=80&w=1200&auto=format&fit=crop" alt="Earthenware pot stew" loading="lazy">
+      <h3>Roman Puls (Ancient Barley & Chickpea Stew)</h3>
+      <p>A rustic staple from antiquity with lovage and garum‑style umami (modern anchovy alternative provided).</p>
+    </article>
+    <article class="card">
+      <img src="https://images.unsplash.com/photo-1513493494684-bf3b2b5c5fcb?q=80&w=1200&auto=format&fit=crop" alt="Wild greens pie" loading="lazy">
+      <h3>Balkan Nettle & Cheese Pita</h3>
+      <p>Wild nettles folded into flaky dough with young cheese and dill. Tips for safe nettle handling included.</p>
+    </article>
+    <article class="card">
+      <img src="https://images.unsplash.com/photo-1458642849426-cfb724f15ef7?q=80&w=1200&auto=format&fit=crop" alt="Golden almond tart" loading="lazy">
+      <h3>Medieval Saffron‑Almond Tart</h3>
+      <p>Custard perfumed with saffron and rosewater baked in a shortcrust — adapted from a 14th‑century manuscript.</p>
+    </article>
+  </section>
+
+  <section id="about" class="about">
+    <div class="card">
+      <div>
+        <h2>About Bernard</h2>
+        <p>Collector of out‑of‑print cookbooks and regional recipes. This site preserves old flavors and guides you through them with a friendly AI sous‑chef.</p>
+        <p><strong>Tip:</strong> Open the chat and say “suggest a rare recipe with nettles and potatoes” or “how do I replace saffron?”.</p>
+      </div>
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop" alt="Chef hands preparing herbs" loading="lazy">
+    </div>
+  </section>
+
+  <section id="contact" class="grid">
+    <div class="card">
+      <h2>Contact</h2>
+      <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+      <p>Or use the chatbot to leave your email with a question — I’ll reply with sourcing tips or substitutions.</p>
+      <form action="https://formspree.io/f/your-id" method="POST">
+        <input name="name" placeholder="Your name" required style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);margin-bottom:8px;background:#fff;color:var(--ink)">
+        <input name="email" type="email" placeholder="Email" required style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);margin-bottom:8px;background:#fff;color:var(--ink)">
+        <textarea name="message" placeholder="What do you need?" required rows="4" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)"></textarea>
+        <button type="submit" style="margin-top:10px;padding:10px 14px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-weight:700">Send</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>© <span id="year"></span> Bernard Klojčnik Zaplotnik • All recipes for personal use only</footer>
+
+  <!-- Chatbot widget -->
+  <button class="chat-launch" id="chatLaunch" aria-label="Open chat">🧑‍🍳</button>
+  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="AI Sous‑Chef" aria-modal="false">
+    <div class="chat-header">
+      <div class="chat-title">AI Sous‑Chef</div>
+      <button class="chat-close" id="chatClose" aria-label="Close chat">✕</button>
+    </div>
+    <div class="chat-log" id="chatLog" aria-live="polite"></div>
+    <form class="chat-input" id="chatForm">
+      <textarea id="chatText" placeholder="Ask for rare recipes, substitutions, or step‑by‑steps… (Enter to send)" aria-label="Message"></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Footer year
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      // Chat elements
+      const launch = document.getElementById('chatLaunch');
+      const panel  = document.getElementById('chatPanel');
+      const closeB = document.getElementById('chatClose');
+      const form   = document.getElementById('chatForm');
+      const input  = document.getElementById('chatText');
+      const log    = document.getElementById('chatLog');
+      const openFromNav = document.getElementById('openChatFromNav');
+
+      function openChat(){ if(panel){ panel.style.display='flex'; input && input.focus(); } }
+      function closeChat(){ if(panel){ panel.style.display='none'; } }
+      if (launch)   launch.addEventListener('click', openChat);
+      if (openFromNav) openFromNav.addEventListener('click', (e)=>{ e.preventDefault(); openChat(); });
+      if (closeB)   closeB.addEventListener('click', closeChat);
+
+      if (input) {
+        input.addEventListener('keydown', (e)=>{
+          if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); form.requestSubmit(); }
+        });
+      }
+
+      // Built‑in small FAQ (fallback if AI endpoint isn't configured)
+      const FAQ = [
+        { test: /hello|hi|hey/i, reply: "Hi! I’m your AI sous‑chef. Ask for rare recipes, substitutions, or cooking times." },
+        { test: /substitution|replace|swap|instead of|without/i, reply: "Tell me the ingredient you’re missing (e.g., ‘replace saffron’), and I’ll suggest flavor‑true swaps." },
+        { test: /nettles?/i, reply: "Try ‘Balkan nettle & cheese pita’. Parboil nettles 60–90s to remove the sting; gloves recommended when handling raw leaves." },
+        { test: /truffle|fuzi|fuži/i, reply: "Istrian fuži with truffle butter: if no truffle, sauté porcini in butter with a splash of soy for umami, finish with parsley." },
+        { test: /saffron|almond tart/i, reply: "Medieval saffron‑almond tart: steep saffron in warm milk; a tiny pinch of turmeric can boost color (not flavor)." },
+        { test: /puls|roman|barley/i, reply: "Roman puls: barley + chickpea base; anchovy paste (¼ tsp) or miso can replace ancient garum’s umami." },
+      ];
+
+      function addMessage(text, who='bot'){
+        if(!log) return;
+        const row = document.createElement('div');
+        row.className = `msg ${who}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = text;
+        row.appendChild(bubble);
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function faqReply(userText){
+        const hit = FAQ.find(f => f.test.test(userText));
+        if(hit) return hit.reply;
+        if(/help|menu|options?/i.test(userText)){
+          return "I can suggest rare recipes, substitutions, or step‑by‑steps. Try: ‘rare fish stew’, ‘replace saffron’, or ‘recipe with nettles & potatoes’.";
+        }
+        return "I’ll pass this to a human if needed. Leave your email or try asking for a specific ingredient or region.";
+      }
+
+      async function aiReply(userText){
+        try {
+          const r = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ messages:[
+            { role:'system', content:'You are an expert culinary assistant focused on rare, regional, and historical recipes. Give safe, concise, step‑by‑step guidance, note food safety (e.g., handling nettles), and offer modern substitutions that keep the flavor profile authentic. If ingredients are unavailable, suggest plausible local alternatives.' },
+            { role:'user', content:userText }
+          ] }) });
+          if (!r.ok) throw new Error('AI endpoint not ready');
+          const { reply } = await r.json();
+          return reply && String(reply).trim() ? reply : null;
+        } catch { return null; }
+      }
+
+      // Greeting
+      addMessage("Welcome to Rare Recipes! Ask me for an unusual dish or a substitution.");
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const text = (input && input.value ? input.value.trim() : '');
+        if(!text) return;
+        addMessage(text, 'me');
+        input.value = '';
+        // Try AI first; fall back to FAQ
+        const ai = await aiReply(text);
+        addMessage(ai || faqReply(text), 'bot');
+      });
+    });
+  </script>
+
+  <!-- ================= Netlify Function (copy blocks into real files) =================
+       These <script type="text/plain"> blocks are just for reference inside one file.
+       To enable AI replies, create the files exactly as shown below in your project.
+  -->
+  <script type="text/plain" data-filename="netlify/functions/chat.js">
+  exports.handler = async (event) => {
+    try {
+      if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) return { statusCode: 500, body: 'Missing OPENAI_API_KEY' };
+      const { messages } = JSON.parse(event.body || '{}');
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'gpt-4o-mini', temperature: 0.4, messages })
+      });
+      const data = await r.json();
+      const reply = data?.choices?.[0]?.message?.content || 'Sorry, I could not generate a reply.';
+      return { statusCode: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify({ reply }) };
+    } catch (err) { return { statusCode: 500, body: 'Server error: ' + err.message }; }
+  };
+  </script>
+
+  <script type="text/plain" data-filename="netlify.toml">
+  [functions]
+    node_bundler = "esbuild"
+
+  [[redirects]]
+    from = "/api/chat"
+    to = "/.netlify/functions/chat"
+    status = 200
+  </script>
+</body>
+</html>
+
+
