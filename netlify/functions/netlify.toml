@@ -1,0 +1,13 @@
+# File: netlify.toml
+[functions]
+  node_bundler = "esbuild"
+
+# (Optional) If your site is plain static HTML at the repo root:
+[build]
+  publish = "."
+
+# Route /api/chat from the browser to the serverless function
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
